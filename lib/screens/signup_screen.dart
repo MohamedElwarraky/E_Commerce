@@ -1,14 +1,16 @@
+import 'package:flutter_app/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/constants.dart';
 import 'package:flutter_app/custom_widget/CustomLogo.dart';
 import 'package:flutter_app/custom_widget/CustomTextField.dart';
-import 'package:flutter_app/constants.dart';
-import 'package:flutter_app/screens/signup_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+import 'login_screen.dart';
+
+class SignupScreen extends StatelessWidget {
   // To track form in which state
   final GlobalKey<FormState> _globalKey =  GlobalKey<FormState>();
 
-  static String id = "LoginScreen";
+  static String id = "SignUpScreen";
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +22,15 @@ class LoginScreen extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             CustomLogo(),
-
             SizedBox(
               height: height * 0.1,
+            ),
+            CustomTextField(
+              hint: 'Enter your name',
+              icon: Icons.perm_identity,
+            ),
+            SizedBox(
+              height: height * 0.02,
             ),
             CustomTextField(
               hint: 'Enter your E-mail',
@@ -50,7 +58,7 @@ class LoginScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20)),
                 color: Colors.black,
                 child: Text(
-                  'Login',
+                  'Sign up',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -61,14 +69,14 @@ class LoginScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text('Don\'t have an account ? ',
+                Text('Do have an account ? ',
                     style: TextStyle(color: Colors.white, fontSize: 16)),
                 GestureDetector(
-                  onTap: (){
-                    Navigator.pushNamed(context, SignupScreen.id);
+                  onTap: () {
+                    Navigator.pushNamed(context, LoginScreen.id);
                   },
                   child: Text(
-                    'Sign up',
+                    'Login',
                     style: TextStyle(
                         fontSize: 16, decoration: TextDecoration.underline),
                   ),
