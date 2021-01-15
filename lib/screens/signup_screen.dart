@@ -1,16 +1,20 @@
 import 'package:flutter_app/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/constants.dart';
-import 'package:flutter_app/custom_widget/CustomLogo.dart';
-import 'package:flutter_app/custom_widget/CustomTextField.dart';
+import 'package:flutter_app/services/auth.dart';
+import 'package:flutter_app/widgets/CustomLogo.dart';
+import 'package:flutter_app/widgets/CustomTextField.dart';
 
 import 'login_screen.dart';
 
 class SignupScreen extends StatelessWidget {
   // To track form in which state
-  final GlobalKey<FormState> _globalKey =  GlobalKey<FormState>();
+  final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
 
   static String id = "SignUpScreen";
+
+  String userName, email, password;
+  final auth = Auth();
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +30,9 @@ class SignupScreen extends StatelessWidget {
               height: height * 0.1,
             ),
             CustomTextField(
+              onClick: (value) {
+                this.userName = value;
+              },
               hint: 'Enter your name',
               icon: Icons.perm_identity,
             ),
@@ -33,6 +40,9 @@ class SignupScreen extends StatelessWidget {
               height: height * 0.02,
             ),
             CustomTextField(
+              onClick: (value) {
+                this.email = value;
+              },
               hint: 'Enter your E-mail',
               icon: Icons.email,
             ),
@@ -40,6 +50,9 @@ class SignupScreen extends StatelessWidget {
               height: height * 0.02,
             ),
             CustomTextField(
+              onClick: (value) {
+                this.password = value;
+              },
               hint: 'Enter your password',
               icon: Icons.lock,
             ),
@@ -50,8 +63,9 @@ class SignupScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 120),
               child: FlatButton(
                 onPressed: () {
-                  if(_globalKey.currentState.validate()){
-                    // TODO: Do something
+                  if (_globalKey.currentState.validate()) {
+                    _globalKey.currentState.save();
+                    auth.signup(email: this.email, password: this.password);
                   }
                 },
                 shape: RoundedRectangleBorder(

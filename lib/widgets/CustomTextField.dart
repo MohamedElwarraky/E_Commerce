@@ -5,7 +5,9 @@ class CustomTextField extends StatelessWidget {
   final String hint;
   final IconData icon;
 
-  CustomTextField({@required this.hint, @required this.icon});
+  final Function onClick;
+
+  CustomTextField({@required this.onClick,@required this.hint, @required this.icon});
 
   String _errorMessage(String str){
     switch(str){
@@ -27,6 +29,8 @@ class CustomTextField extends StatelessWidget {
           }
           // ignore: missing_return
         },
+        onSaved: this.onClick,
+        obscureText: this.hint == 'Enter your password' ? true : false ,
         cursorColor: KMainColor,
         decoration: InputDecoration(
             hintText: this.hint,

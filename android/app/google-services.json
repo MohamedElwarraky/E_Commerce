@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "304711067323",
+    "project_id": "buy-it-74f1e",
+    "storage_bucket": "buy-it-74f1e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:304711067323:android:aeb7dafe4d29a6859eab9e",
+        "android_client_info": {
+          "package_name": "com.elwarraky.flutter_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "304711067323-796r8qcrmo1rnlrp1e8e5grmkm4jcn2e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuctBdlH48xQb9nEcBAbh2W64EwiGvH94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "304711067323-796r8qcrmo1rnlrp1e8e5grmkm4jcn2e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

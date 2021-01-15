@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/custom_widget/CustomLogo.dart';
-import 'package:flutter_app/custom_widget/CustomTextField.dart';
+import 'package:flutter_app/services/auth.dart';
+import 'package:flutter_app/widgets/CustomLogo.dart';
+import 'package:flutter_app/widgets/CustomTextField.dart';
 import 'package:flutter_app/constants.dart';
 import 'package:flutter_app/screens/signup_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   // To track form in which state
-  final GlobalKey<FormState> _globalKey =  GlobalKey<FormState>();
+  final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
 
   static String id = "LoginScreen";
+
+  String email, password;
+  final auth = Auth();
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +24,13 @@ class LoginScreen extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             CustomLogo(),
-
             SizedBox(
               height: height * 0.1,
             ),
             CustomTextField(
+              onClick: (value) {
+                this.email = value;
+              },
               hint: 'Enter your E-mail',
               icon: Icons.email,
             ),
@@ -32,6 +38,9 @@ class LoginScreen extends StatelessWidget {
               height: height * 0.02,
             ),
             CustomTextField(
+              onClick: (value) {
+                this.password = value;
+              },
               hint: 'Enter your password',
               icon: Icons.lock,
             ),
@@ -42,8 +51,9 @@ class LoginScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 120),
               child: FlatButton(
                 onPressed: () {
-                  if(_globalKey.currentState.validate()){
-                    // TODO: Do something
+                  if (_globalKey.currentState.validate()) {
+                    _globalKey.currentState.save();
+                    auth.signIn(email: this.email, password: this.password);
                   }
                 },
                 shape: RoundedRectangleBorder(
@@ -64,7 +74,7 @@ class LoginScreen extends StatelessWidget {
                 Text('Don\'t have an account ? ',
                     style: TextStyle(color: Colors.white, fontSize: 16)),
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigator.pushNamed(context, SignupScreen.id);
                   },
                   child: Text(
