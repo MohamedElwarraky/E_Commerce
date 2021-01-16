@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/provider/adminMode.dart';
 import 'package:flutter_app/provider/modalHud.dart';
-import 'package:flutter_app/screens/home_screen.dart';
+import 'package:flutter_app/screens/user/home_screen.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/widgets/CustomLogo.dart';
 import 'package:flutter_app/widgets/CustomTextField.dart';
@@ -11,7 +11,7 @@ import 'package:flutter_app/screens/signup_screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
-import 'admin_screen.dart';
+import 'admin/admin_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   // To track form in which state
@@ -151,7 +151,7 @@ class LoginScreen extends StatelessWidget {
 
     if (_globalKey.currentState.validate()) {
       _globalKey.currentState.save();
-      if (Provider.of<AdminMode>(context).isAdmin) {
+      if (Provider.of<AdminMode>(context, listen: false).isAdmin) {
         if (password == adminPassword) {
           try {
             final result =
