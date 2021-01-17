@@ -6,6 +6,7 @@ import 'package:flutter_app/screens/admin/addProduct.dart';
 import 'package:flutter_app/screens/admin/admin_screen.dart';
 import 'package:flutter_app/screens/admin/editProduct.dart';
 import 'package:flutter_app/screens/admin/manageProduct.dart';
+import 'package:flutter_app/screens/admin/orders_screen.dart';
 import 'package:flutter_app/screens/user/cart_screen.dart';
 import 'package:flutter_app/screens/user/home_screen.dart';
 import 'package:flutter_app/screens/login_screen.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           initialRoute: LoginScreen.id,
           routes: {
+            OrdersScreen.id: (context) => OrdersScreen(),
             ProductInfo.id: (context) => ProductInfo(),
             LoginScreen.id: (context) => LoginScreen(),
             SignupScreen.id: (context) => SignupScreen(),

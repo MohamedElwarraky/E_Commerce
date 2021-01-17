@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/constants.dart';
 import 'package:flutter_app/screens/admin/addProduct.dart';
 import 'package:flutter_app/screens/admin/manageProduct.dart';
+import 'package:flutter_app/screens/admin/orders_screen.dart';
 
 class AdminHomeScreen extends StatelessWidget {
   static String id = 'AdminHomeScreen';
@@ -32,7 +33,7 @@ class AdminHomeScreen extends StatelessWidget {
           ),
           RaisedButton(
             onPressed: () {
-              //Navigator.pushNamed(context, OrdersScreen.id);
+              Navigator.pushNamed(context, OrdersScreen.id);
             },
             child: Text('View orders'),
           )
