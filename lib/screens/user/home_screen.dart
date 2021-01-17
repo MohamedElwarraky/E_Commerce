@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_app/constants.dart';
 import 'package:flutter_app/models/product.dart';
+import 'package:flutter_app/screens/login_screen.dart';
 import 'package:flutter_app/screens/user/cart_screen.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/store.dart';
 import 'package:flutter_app/widgets/productView.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   static String id = 'HomeScreen';
@@ -19,14 +21,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final auth = Auth();
+  final _auth = Auth();
   FirebaseUser _loggedUser;
-  int tabBarIndex = 0;
-  final store = Store();
-  int bottomBarIndex = 0;
-
-  List<Product> _Product = [];
-
+  int _tabBarIndex = 0;
+  int _bottomBarIndex = 0;
+  final _store = Store();
+  List<Product> _products;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -36,22 +36,28 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Scaffold(
             bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
-              currentIndex: bottomBarIndex,
+              unselectedItemColor: kUnActiveColor,
+              currentIndex: _bottomBarIndex,
               fixedColor: KMainColor,
-              onTap: (value) {
+              onTap: (value) async {
+                if (value == 2) {
+                  SharedPreferences pref =
+                  await SharedPreferences.getInstance();
+                  pref.clear();
+                  await _auth.signOut();
+                  Navigator.popAndPushNamed(context, LoginScreen.id);
+                }
                 setState(() {
-                  bottomBarIndex = value;
+                  _bottomBarIndex = value;
                 });
               },
               items: [
                 BottomNavigationBarItem(
-                    title: Text('Text'), icon: Icon(Icons.person)),
+                    title: Text('Test'), icon: Icon(Icons.person)),
                 BottomNavigationBarItem(
-                    title: Text('Text'), icon: Icon(Icons.person)),
+                    title: Text('Test'), icon: Icon(Icons.person)),
                 BottomNavigationBarItem(
-                    title: Text('Text'), icon: Icon(Icons.person)),
-                BottomNavigationBarItem(
-                    title: Text('Text'), icon: Icon(Icons.person)),
+                    title: Text('Sign Out'), icon: Icon(Icons.close)),
               ],
             ),
             appBar: AppBar(
@@ -61,61 +67,68 @@ class _HomeScreenState extends State<HomeScreen> {
                 indicatorColor: KMainColor,
                 onTap: (value) {
                   setState(() {
-                    tabBarIndex = value;
+                    _tabBarIndex = value;
                   });
                 },
                 tabs: <Widget>[
-                  Text('Jackets',
-                      style: TextStyle(
-                        color: tabBarIndex == 0 ? Colors.black : kUnActiveColor,
-                        fontSize: tabBarIndex == 0 ? 16 : null,
-                      )),
-                  Text('Pants',
-                      style: TextStyle(
-                        color: tabBarIndex == 1 ? Colors.black : kUnActiveColor,
-                        fontSize: tabBarIndex == 1 ? 16 : null,
-                      )),
-                  Text('T-shirts',
-                      style: TextStyle(
-                        color: tabBarIndex == 2 ? Colors.black : kUnActiveColor,
-                        fontSize: tabBarIndex == 2 ? 16 : null,
-                      )),
-                  Text('Shoes',
-                      style: TextStyle(
-                        color: tabBarIndex == 3 ? Colors.black : kUnActiveColor,
-                        fontSize: tabBarIndex == 3 ? 16 : null,
-                      )),
+                  Text(
+                    'Jackets',
+                    style: TextStyle(
+                      color: _tabBarIndex == 0 ? Colors.black : kUnActiveColor,
+                      fontSize: _tabBarIndex == 0 ? 16 : null,
+                    ),
+                  ),
+                  Text(
+                    'Trouser',
+                    style: TextStyle(
+                      color: _tabBarIndex == 1 ? Colors.black : kUnActiveColor,
+                      fontSize: _tabBarIndex == 1 ? 16 : null,
+                    ),
+                  ),
+                  Text(
+                    'T-shirts',
+                    style: TextStyle(
+                      color: _tabBarIndex == 2 ? Colors.black : kUnActiveColor,
+                      fontSize: _tabBarIndex == 2 ? 16 : null,
+                    ),
+                  ),
+                  Text(
+                    'Shoes',
+                    style: TextStyle(
+                      color: _tabBarIndex == 3 ? Colors.black : kUnActiveColor,
+                      fontSize: _tabBarIndex == 3 ? 16 : null,
+                    ),
+                  ),
                 ],
               ),
             ),
             body: TabBarView(
-              children: [
+              children: <Widget>[
                 jacketView(),
-                productView(kPants, _Product),
-                productView(kTshirts, _Product),
-                productView(kShoes, _Product)
+                productView(kPants, _products),
+                productView(kShoes, _products),
+                productView(kTshirts, _products),
               ],
             ),
           ),
         ),
         Material(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+            padding: EdgeInsets.fromLTRB(20, 30, 20, 0),
             child: Container(
-              height: MediaQuery.of(context).size.height * 0.1,
+              height: MediaQuery.of(context).size.height * .1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Text(
                     'Discover'.toUpperCase(),
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, CartScreen.id);
-                    },
-                    child: Icon(Icons.shopping_cart),
-                  )
+                      onTap: () {
+                        Navigator.pushNamed(context, CartScreen.id);
+                      },
+                      child: Icon(Icons.shopping_cart))
                 ],
               ),
             ),
@@ -131,12 +144,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void getCurrentUser() async {
-    _loggedUser = await auth.getUser();
+    _loggedUser = await _auth.getUser();
   }
 
   Widget jacketView() {
     return StreamBuilder<QuerySnapshot>(
-        stream: store.loadProducts(),
+        stream: _store.loadProducts(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<Product> products = [];
@@ -151,9 +164,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   pCategory: data[kProductCategory]));
             }
             // store the data in _Product with a referance
-            _Product = [...products];
+            _products = [...products];
             products.clear();
-            return productView(kJackets, _Product);
+            return productView(kJackets, _products);
           } else {
             return Center(child: Text('Loading...'));
           }

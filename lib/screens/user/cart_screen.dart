@@ -57,7 +57,7 @@ class CartScreen extends StatelessWidget {
                           },
                           child: Container(
                             height: screenHeight * 0.15,
-                            color: KSecondaryColor,
+                            color: kSecondaryColor,
                             child: Row(
                               children: [
                                 CircleAvatar(

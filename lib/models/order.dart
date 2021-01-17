@@ -1,6 +1,6 @@
-class Order{
-  int totlalPrice;
+class Order {
+  String documentId;
+  int totallPrice;
   String address;
-
-  Order(this.totlalPrice, this.address,);
+  Order({this.totallPrice, this.address, this.documentId});
 }

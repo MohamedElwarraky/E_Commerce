@@ -10,64 +10,94 @@ import 'package:flutter_app/constants.dart';
 import 'package:flutter_app/screens/signup_screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'admin/admin_screen.dart';
+class LoginScreen extends StatefulWidget {
+  static String id = 'LoginScreen';
+  final GlobalKey<FormState> globalKey = GlobalKey<FormState>();
 
-class LoginScreen extends StatelessWidget {
-  // To track form in which state
-  final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
 
-  static String id = "LoginScreen";
+class _LoginScreenState extends State<LoginScreen> {
+  String _email, password;
 
-  String email, password;
-  final auth = Auth();
+  final _auth = Auth();
 
   final adminPassword = 'Admin1234';
 
+  bool keepMeLoggedIn = false;
+
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: KMainColor,
       body: ModalProgressHUD(
         inAsyncCall: Provider.of<ModalHud>(context).isLoading,
         child: Form(
-          key: _globalKey,
+          key: widget.globalKey,
           child: ListView(
             children: <Widget>[
               CustomLogo(),
               SizedBox(
-                height: height * 0.1,
+                height: height * .1,
               ),
               CustomTextField(
                 onClick: (value) {
-                  this.email = value;
+                  _email = value;
                 },
-                hint: 'Enter your E-mail',
+                hint: 'Enter your email',
                 icon: Icons.email,
               ),
-              SizedBox(
-                height: height * 0.02,
+              Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: Row(
+                  children: <Widget>[
+                    Theme(
+                      data: ThemeData(unselectedWidgetColor: Colors.white),
+                      child: Checkbox(
+                        checkColor: kSecondaryColor,
+                        activeColor: KMainColor,
+                        value: keepMeLoggedIn,
+                        onChanged: (value) {
+                          setState(() {
+                            keepMeLoggedIn = value;
+                          });
+                        },
+                      ),
+                    ),
+                    Text(
+                      'Remmeber Me ',
+                      style: TextStyle(color: Colors.white),
+                    )
+                  ],
+                ),
               ),
               CustomTextField(
                 onClick: (value) {
-                  this.password = value;
+                  password = value;
                 },
                 hint: 'Enter your password',
                 icon: Icons.lock,
               ),
               SizedBox(
-                height: height * 0.05,
+                height: height * .05,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 120),
                 child: Builder(
                   builder: (context) => FlatButton(
-                    onPressed: () async {
-                      validate(context);
-                    },
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
+                    onPressed: () {
+                      if (keepMeLoggedIn == true) {
+                        keepUserLoggedIn();
+                      }
+                      _validate(context);
+                    },
                     color: Colors.black,
                     child: Text(
                       'Login',
@@ -77,22 +107,22 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: height * 0.05,
+                height: height * .05,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text('Don\'t have an account ? ',
-                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                  Text(
+                    'Don\'t have an account ? ',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
                   GestureDetector(
-                    // To make its content responsive with user
                     onTap: () {
                       Navigator.pushNamed(context, SignupScreen.id);
                     },
                     child: Text(
-                      'Sign up',
-                      style: TextStyle(
-                          fontSize: 16, decoration: TextDecoration.underline),
+                      'Signup',
+                      style: TextStyle(fontSize: 16),
                     ),
                   )
                 ],
@@ -100,7 +130,7 @@ class LoginScreen extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 child: Row(
-                  children: [
+                  children: <Widget>[
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
@@ -108,13 +138,12 @@ class LoginScreen extends StatelessWidget {
                               .changeState(true);
                         },
                         child: Text(
-                          'I\'m an admin',
+                          'i\'m an admin',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Provider.of<AdminMode>(context).isAdmin
-                                ? KMainColor
-                                : Colors.white,
-                          ),
+                              color: Provider.of<AdminMode>(context).isAdmin
+                                  ? KMainColor
+                                  : Colors.white),
                         ),
                       ),
                     ),
@@ -125,19 +154,20 @@ class LoginScreen extends StatelessWidget {
                               .changeState(false);
                         },
                         child: Text(
-                          'I\'m a user',
+                          'i\'m a user',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: !Provider.of<AdminMode>(context).isAdmin
-                                ? KMainColor
-                                : Colors.white,
-                          ),
+                              color:
+                              Provider.of<AdminMode>(context, listen: true)
+                                  .isAdmin
+                                  ? Colors.white
+                                  : KMainColor),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -145,41 +175,44 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  void validate(BuildContext context) async {
-    final modalHUd = Provider.of<ModalHud>(context, listen: false);
-    modalHUd.changeIsLoading(true);
-
-    if (_globalKey.currentState.validate()) {
-      _globalKey.currentState.save();
+  void _validate(BuildContext context) async {
+    final modelhud = Provider.of<ModalHud>(context, listen: false);
+    modelhud.changeIsLoading(true);
+    if (widget.globalKey.currentState.validate()) {
+      widget.globalKey.currentState.save();
       if (Provider.of<AdminMode>(context, listen: false).isAdmin) {
         if (password == adminPassword) {
           try {
-            final result =
-                await auth.signIn(email: this.email, password: this.password);
-            modalHUd.changeIsLoading(false);
+            await _auth.signIn(email: _email.trim(), password:  password.trim());
             Navigator.pushNamed(context, AdminHomeScreen.id);
-          } on PlatformException catch (e) {
-            modalHUd.changeIsLoading(false);
-            Scaffold.of(context)
-                .showSnackBar(SnackBar(content: Text(e.message)));
+          } catch (e) {
+            modelhud.changeIsLoading(false);
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text(e.message),
+            ));
           }
         } else {
-          modalHUd.changeIsLoading(false);
-          Scaffold.of(context)
-              .showSnackBar(SnackBar(content: Text('Something went wrong')));
+          modelhud.changeIsLoading(false);
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text('Something went wrong !'),
+          ));
         }
       } else {
         try {
-          final result =
-              await auth.signIn(email: this.email, password: this.password);
-          modalHUd.changeIsLoading(false);
+          await _auth.signIn( email: _email.trim(), password: password.trim());
           Navigator.pushNamed(context, HomeScreen.id);
-        } on PlatformException catch (e) {
-          modalHUd.changeIsLoading(false);
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+        } catch (e) {
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(e.message),
+          ));
         }
       }
     }
-    modalHUd.changeIsLoading(false);
+    modelhud.changeIsLoading(false);
+  }
+
+  void keepUserLoggedIn() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setBool(kKeepMeLoggedIn, keepMeLoggedIn);
   }
 }
