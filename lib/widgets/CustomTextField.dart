@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
   final String hint;
   final IconData icon;
-
   final Function onClick;
 
   CustomTextField({@required this.onClick,@required this.hint, @required this.icon});
@@ -29,6 +28,7 @@ class CustomTextField extends StatelessWidget {
           }
           // ignore: missing_return
         },
+        //initialValue: value,
         onSaved: this.onClick,
         obscureText: this.hint == 'Enter your password' ? true : false ,
         cursorColor: KMainColor,

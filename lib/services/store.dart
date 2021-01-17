@@ -5,8 +5,8 @@ import 'package:flutter_app/models/product.dart';
 class Store {
   final Firestore _firestore = Firestore.instance;
 
-  addProduct(Product product) {
-    _firestore.collection(kProductsCollection).add({
+  addProduct(Product product) async {
+    await _firestore.collection(kProductsCollection ).add({
       kProductName: product.pName,
       kProductDescription: product.pDescription,
       kProductLocation: product.pLocation,

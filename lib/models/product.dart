@@ -6,6 +6,7 @@ class Product {
   String pCategory;
   String pId;
   int pQuantity;
+
   Product(
       {this.pQuantity,
         this.pId,

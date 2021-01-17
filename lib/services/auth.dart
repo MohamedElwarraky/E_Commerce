@@ -10,7 +10,7 @@ class Auth {
     // async to activate await
     // await is for waiting till the called thread finished then store value in userCredential
     final userCredential = await _auth.createUserWithEmailAndPassword(
-        email: email.trim(), password: password);
+        email: email.trim(), password: password.trim());
     return userCredential;
   }
 
@@ -20,7 +20,15 @@ class Auth {
     // async to activate await
     // await is for waiting till the called thread finished then store value in userCredential
     final userCredential = await _auth.signInWithEmailAndPassword(
-        email: email.trim(), password: password);
+        email: email.trim(), password: password.trim());
     return userCredential;
+  }
+
+  Future<FirebaseUser> getUser() async{
+    return await _auth.currentUser();
+  }
+
+  Future<void> signOut() async{
+    await _auth.signOut();
   }
 }
