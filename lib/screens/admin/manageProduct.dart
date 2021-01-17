@@ -5,6 +5,7 @@ import 'package:flutter_app/constants.dart';
 import 'package:flutter_app/models/product.dart';
 import 'package:flutter_app/screens/admin/editProduct.dart';
 import 'package:flutter_app/services/store.dart';
+import 'package:flutter_app/widgets/customMenu.dart';
 
 class ManageProduct extends StatefulWidget {
   static String id = 'ManageProduct';
@@ -115,23 +116,4 @@ class _ManageProductState extends State<ManageProduct> {
   }
 }
 
-class CustomPopUpMenuItem<T> extends PopupMenuItem<T> {
-  final Widget child;
-  final Function onClick;
 
-  CustomPopUpMenuItem({@required this.child, @required this.onClick})
-      : super(child: child);
-
-  @override
-  PopupMenuItemState<T, PopupMenuItem<T>> createState() {
-    return CustomPopUpMenuItemState();
-  }
-}
-
-class CustomPopUpMenuItemState<T, PopMenuItem>
-    extends PopupMenuItemState<T, CustomPopUpMenuItem<T>> {
-  @override
-  void handleTap() {
-    widget.onClick();
-  }
-}

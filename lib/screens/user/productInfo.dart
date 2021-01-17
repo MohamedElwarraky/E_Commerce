@@ -40,7 +40,7 @@ class _ProductInfoState extends State<ProductInfo> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.pop(context);
                       },
                       child: Icon(Icons.arrow_back_ios),
@@ -176,8 +176,8 @@ class _ProductInfoState extends State<ProductInfo> {
                         },
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
                           ),
                         ),
                         color: KMainColor,
@@ -203,7 +203,21 @@ class _ProductInfoState extends State<ProductInfo> {
   void addToCart(context, product) {
     CartItem cartItem = Provider.of<CartItem>(context, listen: false);
     product.pQuantity = _quantity;
-    cartItem.addProduct(product);
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Added to cart')));
+    bool exsit = false;
+    var productsInCart = cartItem.products;
+    for (var productInCart in productsInCart) {
+      if (productInCart == product) {
+        exsit = true;
+        break;
+      }
+    }
+    if (exsit) {
+      Scaffold.of(context).showSnackBar(
+          SnackBar(content: Text('You \'ve added this item before.')));
+    } else {
+      cartItem.addProduct(product);
+      Scaffold.of(context)
+          .showSnackBar(SnackBar(content: Text('Added to cart')));
+    }
   }
 }
